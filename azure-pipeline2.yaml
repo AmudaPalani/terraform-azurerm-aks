@@ -17,7 +17,7 @@ steps:
       -var="client_secret=${CLIENT_SECRET}" \
       -var="tenant_id=${TENANT_ID}" \
       -var="subscription_id=${SUBSCRIPTION_ID}" \
-      -var="resource_group_name=${RG_NAME}" \
+      -var="resource_group_name=${PREFIX}-${RG_NAME}" \
       -var="prefix=${PREFIX}" \
   displayName: "Terraform Init/Apply"
   env:
