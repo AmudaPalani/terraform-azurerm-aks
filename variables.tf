@@ -37,10 +37,6 @@ variable cluster_name {
   default = "aks-k8s"
 }
 
-variable resource_group_name {
-  default = "aks-k8s"
-}
-
 variable location {
   default = "centralus"
 }
