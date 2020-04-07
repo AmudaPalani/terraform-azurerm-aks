@@ -1,11 +1,8 @@
 pool:
   vmImage: "Ubuntu 16.04"
 
-stages:
-  - stage: Setup
-    jobs:
-      - job: Test
-        steps:
+
+steps:
 - task: TerraformInstaller@0
   inputs:
     terraformVersion: '0.12.18'
