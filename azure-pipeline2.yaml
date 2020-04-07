@@ -1,12 +1,10 @@
 pool:
   vmImage: "Ubuntu 16.04"
 
-
 steps:
 - task: TerraformInstaller@0
   inputs:
     terraformVersion: '0.12.18'
-
 
 # terraform init
 - bash: |
