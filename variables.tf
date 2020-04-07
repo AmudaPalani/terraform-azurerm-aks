@@ -14,6 +14,13 @@ variable "client_secret" {
   description = "The Client Secret (password) for the Service Principal used for the AKS deployment"
 }
 
+variable "tenant_id" {
+  description = "Azure tenant used for the AKS deployment"
+}
+variable "subscription_id" {
+  description = "Azure subscription used for the AKS deployment"
+}
+
 variable "admin_username" {
   default     = "azureuser"
   description = "The username of the local administrator to be created on the Kubernetes cluster"
