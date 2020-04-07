@@ -21,39 +21,40 @@ variable "subscription_id" {
   description = "Azure subscription used for the AKS deployment"
 }
 
-variable "admin_username" {
-  default     = "azureuser"
-  description = "The username of the local administrator to be created on the Kubernetes cluster"
+variable "agent_count" {
+  default = 3
 }
 
-variable "agents_size" {
-  default     = "Standard_F2"
-  description = "The default virtual machine size for the Kubernetes agents"
+# variable "ssh_public_key" {
+#     default = "~/.ssh/id_rsa.pub"
+# }
+
+variable "dns_prefix" {
+  default = "aks-k8s"
 }
 
-variable "log_analytics_workspace_sku" {
-  description = "The SKU (pricing level) of the Log Analytics workspace. For new subscriptions the SKU should be set to PerGB2018"
-  default     = "PerGB2018"
+variable cluster_name {
+  default = "aks-k8s"
 }
 
-variable "log_retention_in_days" {
-  description = "The retention period for the logs in days"
-  default     = 30
+variable resource_group_name {
+  default = "aks-k8s"
 }
 
-variable "agents_count" {
-  description = "The number of Agents that should exist in the Agent Pool"
-  default     = 2
+variable location {
+  default = "centralus"
 }
 
-variable "public_ssh_key" {
-  description = "A custom ssh key to control access to the AKS cluster"
-  default     = ""
-}
+# variable log_analytics_workspace_name {
+#     default = "testLogAnalyticsWorkspaceName"
+# }
 
-variable "tags" {
-  default     = {}
-  description = "Any tags that should be present on the Virtual Network resources"
-  type        = map(string)
-}
+# # refer https://azure.microsoft.com/global-infrastructure/services/?products=monitor for log analytics available regions
+# variable log_analytics_workspace_location {
+#     default = "eastus"
+# }
 
+# refer https://azure.microsoft.com/pricing/details/monitor/ for log analytics pricing 
+# variable log_analytics_workspace_sku {
+#     default = "PerGB2018"
+# }
