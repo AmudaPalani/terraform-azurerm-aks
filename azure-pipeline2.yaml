@@ -19,6 +19,7 @@ steps:
       -var="tenant_id=${TENANT_ID}" \
       -var="subscription_id=${SUBSCRIPTION_ID}" \
       -var="resource_group_name=${RG_NAME}" \
+      -var="prefix=${PREFIX}" \
   displayName: "Terraform Init/Apply"
   env:
     CLIENT_ID: $(ARM_CLIENT_ID)
@@ -26,4 +27,5 @@ steps:
     TENANT_ID: $(TENANT_ID)
     SUBSCRIPTION_ID: $(SUBSCRIPTION_ID)
     RG_NAME: $(RG_NAME)
+    PREFIX: $(PREFIX)
  
