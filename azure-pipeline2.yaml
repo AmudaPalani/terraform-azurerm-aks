@@ -6,26 +6,28 @@ stages:
     jobs:
       - job: Test
         steps:
-                # Install Terraform
-                - task: TerraformInstaller@0
-                  inputs:
-                    terraformVersion: "0.12.18"
-                  displayName: "Install Terraform"
 
-                # terraform init
-                - bash: |
-                    terraform init -input=false
-                    terraform apply \
-                      -auto-approve \
-                      -input=false \
-                      -var="client_id=${CLIENT_ID}" \
-                      -var="client_secret=${CLIENT_SECRET}" \
-                      -var="tenant_id=${TENANT_ID}" \
-                      -var="subscription_id=${SUBSCRIPTION_ID}" \
-                  displayName: "Terraform Init/Apply"
-                  env:
-                    CLIENT_ID: $(ARM_CLIENT_ID)
-                    CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-                    TENANT_ID: $(TENANT_ID)
-                    SUBSCRIPTION_ID: $(SUBSCRIPTION_ID)
+          # Install Terraform
+          - task: TerraformInstaller@0
+            inputs:
+            terraformVersion: "0.12.18"
+            displayName: "Install Terraform"
+
+
+          # terraform init
+          - bash: |
+              terraform init -input=false
+              terraform apply \
+                -auto-approve \
+                -input=false \
+                -var="client_id=${CLIENT_ID}" \
+                -var="client_secret=${CLIENT_SECRET}" \
+                -var="tenant_id=${TENANT_ID}" \
+                -var="subscription_id=${SUBSCRIPTION_ID}" \
+            displayName: "Terraform Init/Apply"
+            env:
+              CLIENT_ID: $(ARM_CLIENT_ID)
+              CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+              TENANT_ID: $(TENANT_ID)
+              SUBSCRIPTION_ID: $(SUBSCRIPTION_ID)
  
