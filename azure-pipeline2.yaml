@@ -6,12 +6,9 @@ stages:
     jobs:
       - job: Test
         steps:
-
-          # Install Terraform
-          - task: TerraformInstaller@0
-            inputs:
-            terraformVersion: "0.12.18"
-            displayName: "Install Terraform"
+- task: TerraformInstaller@0
+  inputs:
+    terraformVersion: '0.12.18'
 
 
           # terraform init
