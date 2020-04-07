@@ -11,35 +11,39 @@ provider "azurerm" {
 
 }
 
-data "azurerm_resource_group" "main" {
-  name = var.resource_group_name
+resource "azurerm_resource_group" "rg" {
+  name     = "terraform-vnet-rg"
+  location = var.location
 }
 
-module "ssh-key" {
-  source         = "./modules/ssh-key"
-  public_ssh_key = var.public_ssh_key == "" ? "" : var.public_ssh_key
+resource "azurerm_virtual_network" "network" {
+  name                = "wus-aks-vnet"
+  location            = "${azurerm_resource_group.rg.location}"
+  resource_group_name = "${azurerm_resource_group.rg.name}"
+  address_space       = ["10.1.0.0/16"]
 }
 
-resource "azurerm_kubernetes_cluster" "main" {
-  name                = "${var.prefix}-aks"
-  location            = data.azurerm_resource_group.main.location
-  resource_group_name = data.azurerm_resource_group.main.name
-  dns_prefix          = var.prefix
-  linux_profile {
-    admin_username = var.admin_username
+resource "azurerm_subnet" "subnet" {
+  name                      = "aks-subnet"
+  resource_group_name       = "${azurerm_resource_group.rg.name}"
+  address_prefix            = "10.1.0.0/24"
+  virtual_network_name      = "${azurerm_virtual_network.network.name}"
+}
 
-    ssh_key {
-      # remove any new lines using the replace interpolation function
-      key_data = replace(var.public_ssh_key == "" ? module.ssh-key.public_ssh_key : var.public_ssh_key, "\n", "")
-    }
-  }
+resource "azurerm_kubernetes_cluster" "dce_cluster" {
+  name       = "aks"
+  location   = "${azurerm_resource_group.rg.location}"
+  dns_prefix = "aks"
 
-  agent_pool_profile {
-    name            = "nodepool"
-    count           = var.agents_count
-    vm_size         = var.agents_size
-    os_type         = "Linux"
-    os_disk_size_gb = 50
+  resource_group_name = "${azurerm_resource_group.rg.name}"
+  kubernetes_version  = "1.15.10"
+
+  default_node_pool {
+    name           = "aks"
+    node_count     = "1"
+    vm_size        = "Standard_D2"
+    type           =  "AvailabilitySet" 
+    vnet_subnet_id = "${azurerm_subnet.subnet.id}"
   }
 
   service_principal {
@@ -47,36 +51,13 @@ resource "azurerm_kubernetes_cluster" "main" {
     client_secret = var.client_secret
   }
 
-  addon_profile {
-    oms_agent {
-      enabled                    = true
-      log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
-    }
+  network_profile {
+    network_plugin = "azure"
   }
 
-  tags = var.tags
-}
-
-
-resource "azurerm_log_analytics_workspace" "main" {
-  name                = "${var.prefix}-workspace"
-  location            = data.azurerm_resource_group.main.location
-  resource_group_name = var.resource_group_name
-  sku                 = var.log_analytics_workspace_sku
-  retention_in_days   = var.log_retention_in_days
-}
-
-resource "azurerm_log_analytics_solution" "main" {
-  solution_name         = "ContainerInsights"
-  location              = data.azurerm_resource_group.main.location
-  resource_group_name   = var.resource_group_name
-  workspace_resource_id = azurerm_log_analytics_workspace.main.id
-  workspace_name        = azurerm_log_analytics_workspace.main.name
-
-  plan {
-    publisher = "Microsoft"
-    product   = "OMSGallery/ContainerInsights"
+  tags = {
+    Environment = "Dev"
+    Billing = "DCE"
   }
+
 }
-
-
